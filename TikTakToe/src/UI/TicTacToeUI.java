@@ -2,15 +2,12 @@ package UI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
-public class TicTacToeUI {
+public class TicTacToeUI extends JFrame{
     private static final String Kreis= "KREIS";
     private static final String Kreuz = "KREUZ";
-    private JPanel rootPanel;
+    public JPanel rootPanel;
     private JPanel TicTacToeField;
     private JButton newGame;
     private String [] [] spielfeld = new String[3][3];
@@ -31,6 +28,8 @@ public class TicTacToeUI {
                 zeichneLeeresSpielfeld();
             }
         });
+
+
     }
 
     private void zeichneLeeresSpielfeld(){
@@ -44,6 +43,8 @@ public class TicTacToeUI {
         g2d.drawLine(0,200,300,200);
 
     }
+
+
 
     private void setSpielfeld(int x,int y){
 
@@ -156,7 +157,8 @@ public class TicTacToeUI {
 
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("TicTacToeUI");
+        //JFrame frame = new JFrame("TicTacToeUI");
+        TicTacToeUI frame = new TicTacToeUI();
         frame.setContentPane(new TicTacToeUI().rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
