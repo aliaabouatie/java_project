@@ -76,6 +76,7 @@ public class TicTacToeUI {
         }
 
         spielfeld[y][x] = SymbolAnDerReihe;
+
         if (SymbolAnDerReihe.equals(Kreis)){
             zeichneKreis(x,y);
             SymbolAnDerReihe = Kreuz;
@@ -83,6 +84,7 @@ public class TicTacToeUI {
             zeichneKreuz(x,y);
             SymbolAnDerReihe = Kreis;
         }
+
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
                 System.out.print(spielfeld[i][j] + " | ");
