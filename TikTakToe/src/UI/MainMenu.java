@@ -29,12 +29,22 @@ public class MainMenu {
         startGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TicTacToeUI frame = new TicTacToeUI();
-                frame.setContentPane(new TicTacToeUI().rootPanel);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.pack();
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
+                if (PlayerVsPlayer.isSelected()) {
+                    TicTacToeUI frame = new TicTacToeUI();
+                    frame.setContentPane(new TicTacToeUI().rootPanel);
+                    //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frame.pack();
+                    frame.setLocationRelativeTo(null);
+                    frame.setVisible(true);
+                }
+                if (PlayerVsComp.isSelected()){
+                    TicTacToeUI frame = new TicTacToeUI();
+                    frame.setContentPane(new TicTacToeUI().rootPanel);
+                    //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frame.pack();
+                    frame.setLocationRelativeTo(null);
+                    frame.setVisible(true);
+                }
             }
         });
     }
