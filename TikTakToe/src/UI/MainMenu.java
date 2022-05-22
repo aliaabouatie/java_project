@@ -30,16 +30,16 @@ public class MainMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (PlayerVsPlayer.isSelected()) {
-                    TicTacToeUI frame = new TicTacToeUI();
-                    frame.setContentPane(new TicTacToeUI().rootPanel);
+                    TicTacToeUI frame = new TicTacToeUI("Player");
+                    frame.setContentPane(new TicTacToeUI("Player").rootPanel);
                     //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.pack();
                     frame.setLocationRelativeTo(null);
                     frame.setVisible(true);
                 }
                 if (PlayerVsComp.isSelected()){
-                    TicTacToeUI frame = new TicTacToeUI();
-                    frame.setContentPane(new TicTacToeUI().rootPanel);
+                    TicTacToeUI frame = new TicTacToeUI("Computer");
+                    frame.setContentPane(new TicTacToeUI("Computer").rootPanel);
                     //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.pack();
                     frame.setLocationRelativeTo(null);
