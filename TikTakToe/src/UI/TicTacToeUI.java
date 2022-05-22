@@ -19,6 +19,14 @@ public class TicTacToeUI extends JFrame{
             public void mousePressed(MouseEvent e) {
                 System.out.println(e.getX()+ " " + e.getY());
                 setSpielfeld(e.getX(),e.getY());
+                if(checkWinZeichen()){
+                    zeichneLeeresSpielfeld();
+                    resetSpielfeld();
+                }
+                if(checkSpielbrettVoll()){
+                    zeichneLeeresSpielfeld();
+                    resetSpielfeld();
+                }
             }
         });
 
@@ -44,6 +52,14 @@ public class TicTacToeUI extends JFrame{
 
     }
 
+    private void resetSpielfeld(){
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                spielfeld[i][j] = null;
+            }
+        }
+    }
+
     private boolean checkSpielbrettVoll(){
         boolean spielvorbei = true;
         for (int i = 0; i < 3; i++) {
@@ -56,6 +72,47 @@ public class TicTacToeUI extends JFrame{
         return spielvorbei;
     }
 
+    public boolean checkWinZeichen(){ //Wenn gewonnen dann true zurückgeben
+
+        for(int i = 0; i<=2; i++) {//prüft horizontal
+            if (spielfeld[i][0] == Kreis && spielfeld[i][1] == Kreis && spielfeld[i][2] == Kreis) {
+                System.out.println("Kreis hat gewonnen");
+                return true;
+            }
+            if (spielfeld[0][i] == Kreis && spielfeld[1][i] == Kreis && spielfeld[2][i] == Kreis) {
+                System.out.println("Kreis hat gewonnen");
+                return true;
+            }
+        }
+        if (spielfeld[0][0] == Kreis && spielfeld[1][1] == Kreis && spielfeld[2][2] == Kreis) {//prüft erste diagonale
+            System.out.println("Kreis hat gewonnen");
+            return true;
+        }
+        if (spielfeld[0][2] == Kreis && spielfeld[1][1] == Kreis && spielfeld[2][0] == Kreis) {//prüft zweite diagonale
+            System.out.println("Kreis hat gewonnen");
+            return true;
+        }
+
+        for(int i = 0; i<=2; i++) {//prüft horizontal
+            if (spielfeld[i][0] == Kreuz && spielfeld[i][1] == Kreuz && spielfeld[i][2] == Kreuz) {
+                System.out.println("Kreuz hat gewonnen");
+                return true;
+            }
+            if (spielfeld[0][i] == Kreuz && spielfeld[1][i] == Kreuz && spielfeld[2][i] == Kreuz) {
+                System.out.println("Kreuz hat gewonnen");
+                return true;
+            }
+        }
+        if (spielfeld[0][0] == Kreuz && spielfeld[1][1] == Kreuz && spielfeld[2][2] == Kreuz) {//prüft erste diagonale
+            System.out.println("Kreuz hat gewonnen");
+            return true;
+        }
+        if (spielfeld[0][2] == Kreuz && spielfeld[1][1] == Kreuz && spielfeld[2][0] == Kreuz) {//prüft zweite diagonale
+            System.out.println("Kreuz hat gewonnen");
+            return true;
+        }
+        return false;
+    }
 
     private void setSpielfeld(int x,int y){
 
