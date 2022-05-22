@@ -44,6 +44,17 @@ public class TicTacToeUI extends JFrame{
 
     }
 
+    private boolean checkSpielbrettVoll(){
+        boolean spielvorbei = true;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if(spielfeld[i][j] == null){
+                    spielvorbei = false;
+                }
+            }
+        }
+        return spielvorbei;
+    }
 
 
     private void setSpielfeld(int x,int y){
