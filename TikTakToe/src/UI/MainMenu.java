@@ -17,26 +17,21 @@ public class MainMenu {
     private JLabel tictactoe;
     private JRadioButton PlayerVsPlayer;
     private JRadioButton PlayerVsComp;
+    private String[] PlayerArray = {"Marc"};
     private JComboBox comboBox1;
     private JComboBox comboBox2;
     private JButton newPlayerButton;
-    private JList leaderboard;
     private JButton startGameButton;
 
     public MainMenu() {
-        String[] PlayerArray = getPlayers();
-        System.out.println(PlayerArray);
-        String[] PlayerArray2 = {"Marc","Mia"};
-        comboBox1 = new JComboBox(PlayerArray2);
-
-
-
+        getPlayers();
         newPlayerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 NewPlayer dialog = new NewPlayer();
                 dialog.pack();
                 dialog.setVisible(true);
+                comboBox1.addItem("Marc");
 
             }
         });
@@ -44,8 +39,8 @@ public class MainMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (PlayerVsPlayer.isSelected()) {
-                    TicTacToeUI frame = new TicTacToeUI("Player", "Marc", "Mia");
-                    frame.setContentPane(new TicTacToeUI("Player", "Marc", "Mia").rootPanel);
+                    TicTacToeUI frame = new TicTacToeUI("Player",  String.valueOf(comboBox1.getSelectedItem()), String.valueOf(comboBox2.getSelectedItem()));
+                    frame.setContentPane(new TicTacToeUI("Player",   String.valueOf(comboBox1.getSelectedItem()), String.valueOf(comboBox2.getSelectedItem())).rootPanel);
                     //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.pack();
                     frame.setLocationRelativeTo(null);
@@ -53,8 +48,8 @@ public class MainMenu {
                     frame.setResizable(false);
                 }
                 if (PlayerVsComp.isSelected()) {
-                    TicTacToeUI frame = new TicTacToeUI("Computer", "Marc", "Computer");
-                    frame.setContentPane(new TicTacToeUI("Computer", "Marc", "Computer").rootPanel);
+                    TicTacToeUI frame = new TicTacToeUI("Computer",  String.valueOf(comboBox1.getSelectedItem()), String.valueOf(comboBox2.getSelectedItem()));
+                    frame.setContentPane(new TicTacToeUI("Computer", String.valueOf(comboBox1.getSelectedItem()),String.valueOf(comboBox2.getSelectedItem())).rootPanel);
                     //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.pack();
                     frame.setLocationRelativeTo(null);
@@ -63,10 +58,27 @@ public class MainMenu {
                 }
             }
         });
+
+        PlayerVsComp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (PlayerVsComp.isSelected()){
+                    comboBox2.setSelectedIndex(0);
+                    comboBox2.setEnabled(false);
+                }
+            }
+        });
+        PlayerVsPlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (PlayerVsPlayer.isSelected()){
+                    comboBox2.setEnabled(true);
+                }
+            }
+        });
     }
 
-    private String[] getPlayers() {
-        ArrayList<String> PlayerArray= new ArrayList<String>();
+    private void getPlayers() {
 
         try {
             Path PlayerDatei = Paths.get("players.csv");
@@ -75,7 +87,8 @@ public class MainMenu {
             String zeile = meinReader.readLine(); // erste Zeile lesen while (zeile != null) { // null wenn am Dateiende
             zeile = meinReader.readLine(); // naechste Zeile lesen
             while (zeile != null){
-                PlayerArray.add(zeile);
+                comboBox1.addItem(zeile);
+                comboBox2.addItem(zeile);
                 zeile = meinReader.readLine();
             }
 
@@ -83,14 +96,9 @@ public class MainMenu {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String[] PlayerList = new String[PlayerArray.size()];
-        for(int i = 0; i < PlayerArray.size(); i++){
-            PlayerList[i] = (PlayerArray.get(i));
-            System.out.println(String.valueOf(PlayerArray.get(i)));
-        }
-        System.out.println(PlayerList.length);
-        return PlayerList;
+
     }
+
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("MainMenu");
@@ -100,7 +108,8 @@ public class MainMenu {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        //frame.getContentPane().setBackground(Color.blue);
+        //frame.getContentPane().setBackground(Color.blue)
+
     }
 
 }

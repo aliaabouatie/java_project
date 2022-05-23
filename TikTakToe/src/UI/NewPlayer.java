@@ -50,14 +50,19 @@ public class NewPlayer extends JDialog {
 
 
     private void onOK() {
-        try {
-            Path playerDatei = Paths.get("players.csv");
-            BufferedWriter meinWriter = Files.newBufferedWriter(playerDatei, StandardOpenOption.APPEND);
+        System.out.println((tfPlayername.getText()));
+        if (!tfPlayername.getText().equals("")) {
+            try {
+                Path playerDatei = Paths.get("players.csv");
+                BufferedWriter meinWriter = Files.newBufferedWriter(playerDatei, StandardOpenOption.APPEND);
 
-            meinWriter.write(tfPlayername.getText() + "\n");
-            meinWriter.close();
-        }catch (Exception e) { e.printStackTrace();
-        }dispose();
+                meinWriter.write(tfPlayername.getText() + "\n");
+                meinWriter.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        dispose();
     }
 
     private void onCancel() {
