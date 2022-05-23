@@ -3,6 +3,8 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class TicTacToeUI extends JFrame {
     public JPanel rootPanel;
@@ -15,52 +17,35 @@ public class TicTacToeUI extends JFrame {
     private JLabel numberfield_seperator;
     private JLabel Player2_score;
     private JLabel Player1_score;
+    private JPanel SouthPanel;
+    private JPanel EastPanel;
+    private JPanel WestPanel;
     private Spielbrett spielfeld = new Spielbrett();
-    private Marker Kreis = new Marker('0');
+    private Marker Kreis = new Marker('O');
     private Marker Kreuz = new Marker('X');
     private Marker SymbolAnDerReihe = Kreis;
     private MinMaxAI AI = new MinMaxAI();
     private Integer player1_score_int = 0;
     private Integer player2_score_int = 0;
+    private Player Player1;
+    private Player Player2;
 
-    public TicTacToeUI(String Modus) {
+
+    public TicTacToeUI(String Modus, String player1_name, String player2_name) {
+        Player1 = new Player(player1_name, Kreis, true);
+        Player2 = new Player(player2_name, Kreuz, false);
+        Player1_name.setText(Player1.getName() + ": " + Player1.getMarker().getZeichen() + "  ");
+        Player2_name.setText(Player2.getName() + ": " + Player2.getMarker().getZeichen() + "  ");
+        Player1_score.setText(String.valueOf(player1_score_int));
+        Player2_score.setText(String.valueOf(player2_score_int));
+
         if ("Player".equals(Modus)) {
             TicTacToeField.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     setSpielfeld(e.getX(), e.getY());
-                    if (spielfeld.checkSpielfeldVoll()) {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ex) {
-                        }
-                        ;
-                        spielfeld.fuelleFelder();
-                        zeichneLeeresSpielfeld();
-                    }
-
-                    if (spielfeld.checkWinZeichen(Kreis.getZeichen())) {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ex) {
-                        }
-                        ;
-                        spielfeld.fuelleFelder();
-                        zeichneLeeresSpielfeld();
-                        System.out.println("Kreis hat gewonnen");
-                    }
-
-                    if (spielfeld.checkWinZeichen(Kreuz.getZeichen())) {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ex) {
-                        }
-                        ;
-                        spielfeld.fuelleFelder();
-                        zeichneLeeresSpielfeld();
-                        System.out.println("Kreuz hat gewonnen");
-                    }
-
+                    checkWin();
+                    checkVollesSpielfeld();
                 }
             });
 
@@ -68,7 +53,10 @@ public class TicTacToeUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     zeichneLeeresSpielfeld();
+                    spielfeld.fuelleFelder();
                     System.out.println(spielfeld);
+                    System.out.println(Player1.getName() + " " + Player1.getMarker());
+                    System.out.println(Player2.getName() + " " + Player2.getMarker());
                 }
             });
         }
@@ -77,105 +65,53 @@ public class TicTacToeUI extends JFrame {
             TicTacToeField.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    setSpielfeld(e.getX(), e.getY());
 
-                    if (spielfeld.checkWinZeichen(Kreis.getZeichen())) {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ex) {
+                    boolean feld_frei = setSpielfeld(e.getX(), e.getY());
+                    if (feld_frei) {
+                        checkWin();
+                        if (checkVollesSpielfeld()) {
+
+                        } else {
+                            try {
+                                Thread.sleep(200);
+                            } catch (InterruptedException ex) {
+                            }
+                            ;
                         }
-                        spielfeld.fuelleFelder();
-                        zeichneLeeresSpielfeld();
-                    }
-
-                    if (spielfeld.checkWinZeichen(Kreuz.getZeichen())) {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ex) {
+                        ComputerSpielt(spielfeld, SymbolAnDerReihe);
+                        if(checkWin()){
+                            if(Player2.isStartet()){
+                                ComputerSpielt(spielfeld,SymbolAnDerReihe);
+                            }
                         }
-                        ;
-                        spielfeld.fuelleFelder();
-                        zeichneLeeresSpielfeld();
-                        System.out.println("Kreuz hat gewonnen");
-                    }
-
-                    if (spielfeld.checkSpielfeldVoll()) {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ex) {
+                        if(checkVollesSpielfeld()){
+                            if(Player2.isStartet()){
+                                ComputerSpielt(spielfeld,SymbolAnDerReihe);
+                            }
                         }
-                        ;
-                        spielfeld.fuelleFelder();
-                        zeichneLeeresSpielfeld();
-                    }
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException ex) {
-                    }
-                    ;
-
-                    int[] ergebnisArray = new int[2];
-                    ergebnisArray = AI.sucheBestenZug(spielfeld);
-                    int reihePos = ergebnisArray[0];
-                    int zeilePos = ergebnisArray[1];
-                    spielfeld.setzeMarker(reihePos, zeilePos, SymbolAnDerReihe.getZeichen());
-
-                    if (SymbolAnDerReihe.equals(Kreis)) {
-                        zeichneKreis(zeilePos, reihePos);
-                        SymbolAnDerReihe = Kreuz;
-                    } else {
-                        zeichneKreuz(zeilePos, reihePos);
-                        SymbolAnDerReihe = Kreis;
-                    }
-
-                    if (spielfeld.checkWinZeichen(Kreis.getZeichen())) {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ex) {
-                        }
-                        ;
-                        spielfeld.fuelleFelder();
-                        zeichneLeeresSpielfeld();
-                        System.out.println("Kreis hat gewonnen");
-                    }
-
-                    if (spielfeld.checkWinZeichen(Kreuz.getZeichen())) {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ex) {
-                        }
-                        ;
-                        spielfeld.fuelleFelder();
-                        zeichneLeeresSpielfeld();
-                        System.out.println("Kreuz hat gewonnen");
-                    }
-                    if (spielfeld.checkSpielfeldVoll()) {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ex) {
-                        }
-                        ;
-                        spielfeld.fuelleFelder();
-                        zeichneLeeresSpielfeld();
                     }
                 }
             });
 
-            newGame.addActionListener(new
-
-                                              ActionListener() {
-                                                  @Override
-                                                  public void actionPerformed(ActionEvent e) {
-                                                      zeichneLeeresSpielfeld();
-                                                      System.out.println(spielfeld);
-                                                  }
-                                              });
+            newGame.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    zeichneLeeresSpielfeld();
+                    spielfeld.fuelleFelder();
+                    System.out.println(spielfeld);
+                    System.out.println(Player1.getName() + " " + Player1.getMarker());
+                    System.out.println(Player2.getName() + " " + Player2.getMarker());
+                }
+            });
         }
+
+
     }
 
     private void zeichneLeeresSpielfeld() {
         Graphics2D g2d = (Graphics2D) TicTacToeField.getGraphics();
         g2d.setColor(Color.white);
+        g2d.setStroke(new BasicStroke(4));
         g2d.fillRect(0, 0, TicTacToeField.getWidth(), TicTacToeField.getHeight());
         g2d.setColor(Color.black);
         g2d.drawLine(100, 0, 100, 300);
@@ -185,7 +121,7 @@ public class TicTacToeUI extends JFrame {
 
     }
 
-    private void setSpielfeld(int x, int y) {
+    private boolean setSpielfeld(int x, int y) {
 
         if (x < 100) {
             x = 0;
@@ -210,12 +146,8 @@ public class TicTacToeUI extends JFrame {
                 }
             }
         }
-
-        //if (spielfeld[y][x] != null){
-        //  return;
-        //}
-        if (spielfeld.holeMarker(y, x).equals('N')) {
-            return;
+        if (!String.valueOf(spielfeld.holeMarker(y, x).getZeichen()).equals("N")) {
+            return false;
         }
 
         spielfeld.setzeMarker(y, x, SymbolAnDerReihe.getZeichen());
@@ -229,11 +161,13 @@ public class TicTacToeUI extends JFrame {
         }
 
         spielfeld.gibSpielbrettAusTemp();
+        return true;
     }
 
     private void zeichneKreis(int x, int y) {
         Graphics2D g2d = (Graphics2D) TicTacToeField.getGraphics();
         g2d.setColor(Color.black);
+        g2d.setStroke(new BasicStroke(7));
 
         switch (x) {
             case 0:
@@ -264,6 +198,7 @@ public class TicTacToeUI extends JFrame {
     private void zeichneKreuz(int x, int y) {
         Graphics2D g2d = (Graphics2D) TicTacToeField.getGraphics();
         g2d.setColor(Color.black);
+        g2d.setStroke(new BasicStroke(7));
 
         switch (x) {
             case 0:
@@ -292,11 +227,96 @@ public class TicTacToeUI extends JFrame {
         g2d.drawLine(x + 90, y + 10, x + 10, y + 90);
     }
 
+    private boolean checkWin() {
+        if (spielfeld.checkWinZeichen(Kreis.getZeichen())) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+            }
+            ;
+            spielfeld.fuelleFelder();
+            zeichneLeeresSpielfeld();
+            System.out.println("Kreis hat gewonnen");
+            Player Winner = CheckWinner(Kreis);
+            switchPlayerStartet();
+            return true;
+        }
+
+        if (spielfeld.checkWinZeichen(Kreuz.getZeichen())) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+            }
+            ;
+            spielfeld.fuelleFelder();
+            zeichneLeeresSpielfeld();
+            System.out.println("Kreuz hat gewonnen");
+            Player Winner = CheckWinner(Kreuz);
+            switchPlayerStartet();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkVollesSpielfeld() {
+        if (spielfeld.checkSpielfeldVoll()) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+            }
+            ;
+            spielfeld.fuelleFelder();
+            zeichneLeeresSpielfeld();
+            switchPlayerStartet();
+            return true;
+        }
+        return false;
+    }
+
+    private void switchPlayerStartet() {
+        if (Player1.isStartet()) {
+            Player1.setStartet(false);
+            Player2.setStartet(true);
+            SymbolAnDerReihe = Player2.getMarker();
+        } else {
+            Player1.setStartet(true);
+            Player2.setStartet(false);
+            SymbolAnDerReihe = Player1.getMarker();
+        }
+    }
+
+    private Player CheckWinner(Marker Marker) {
+        if (Marker.getZeichen() == Player1.getMarker().getZeichen()) {
+            player1_score_int += 1;
+            Player1_score.setText(String.valueOf(player1_score_int));
+            return Player1;
+        } else {
+            player2_score_int += 1;
+            Player2_score.setText(String.valueOf(player2_score_int));
+            return Player2;
+        }
+    }
+
+    private void ComputerSpielt(Spielbrett spielfeld, Marker zeichen) {
+        int[] ergebnisArray = new int[2];
+        ergebnisArray = AI.sucheBestenZug(spielfeld);
+        int reihePos = ergebnisArray[0];
+        int zeilePos = ergebnisArray[1];
+        spielfeld.setzeMarker(reihePos, zeilePos, zeichen.getZeichen());
+
+        if (zeichen.equals(Kreis)) {
+            zeichneKreis(zeilePos, reihePos);
+            SymbolAnDerReihe = Kreuz;
+        } else {
+            zeichneKreuz(zeilePos, reihePos);
+            SymbolAnDerReihe = Kreis;
+        }
+    }
 
     public static void main(String[] args) {
         //JFrame frame = new JFrame("TicTacToeUI");
-        TicTacToeUI frame = new TicTacToeUI("Player");
-        frame.setContentPane(new TicTacToeUI("Player").rootPanel);
+        TicTacToeUI frame = new TicTacToeUI("Player", "Marc", "Mia");
+        frame.setContentPane(new TicTacToeUI("Player", "Marc", "Mia").rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);

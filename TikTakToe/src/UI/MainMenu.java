@@ -30,20 +30,22 @@ public class MainMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (PlayerVsPlayer.isSelected()) {
-                    TicTacToeUI frame = new TicTacToeUI("Player");
-                    frame.setContentPane(new TicTacToeUI("Player").rootPanel);
+                    TicTacToeUI frame = new TicTacToeUI("Player", "Marc", "Mia");
+                    frame.setContentPane(new TicTacToeUI("Player","Marc", "Mia").rootPanel);
                     //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.pack();
                     frame.setLocationRelativeTo(null);
                     frame.setVisible(true);
+                    frame.setResizable(false);
                 }
                 if (PlayerVsComp.isSelected()){
-                    TicTacToeUI frame = new TicTacToeUI("Computer");
-                    frame.setContentPane(new TicTacToeUI("Computer").rootPanel);
+                    TicTacToeUI frame = new TicTacToeUI("Computer","Marc", "Computer");
+                    frame.setContentPane(new TicTacToeUI("Computer","Marc", "Computer").rootPanel);
                     //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.pack();
                     frame.setLocationRelativeTo(null);
                     frame.setVisible(true);
+                    frame.setResizable(false);
                 }
             }
         });
