@@ -2,6 +2,8 @@ package UI;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.BufferedWriter;
+import java.nio.file.*;
 
 public class NewPlayer extends JDialog {
     private JPanel contentPane;
@@ -48,8 +50,14 @@ public class NewPlayer extends JDialog {
 
 
     private void onOK() {
-        // add your code here
-        dispose();
+        try {
+            Path playerDatei = Paths.get("players.csv");
+            BufferedWriter meinWriter = Files.newBufferedWriter(playerDatei, StandardOpenOption.APPEND);
+
+            meinWriter.write(tfPlayername.getText() + "\n");
+            meinWriter.close();
+        }catch (Exception e) { e.printStackTrace();
+        }dispose();
     }
 
     private void onCancel() {
