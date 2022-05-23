@@ -110,7 +110,7 @@ public class TicTacToeUI extends JFrame {
 
     private void zeichneLeeresSpielfeld() {
         Graphics2D g2d = (Graphics2D) TicTacToeField.getGraphics();
-        g2d.setColor(Color.white);
+        g2d.setColor(new Color (78,113,109));
         g2d.setStroke(new BasicStroke(4));
         g2d.fillRect(0, 0, TicTacToeField.getWidth(), TicTacToeField.getHeight());
         g2d.setColor(Color.black);
