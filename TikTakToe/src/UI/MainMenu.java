@@ -1,6 +1,7 @@
 package UI;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -58,5 +59,7 @@ public class MainMenu {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
+        //frame.getContentPane().setBackground(Color.blue);
     }
+
 }
