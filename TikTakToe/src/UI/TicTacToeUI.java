@@ -43,6 +43,7 @@ public class TicTacToeUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
+        setTitle("Tic Tac Toe");
 
         Player1 = new Player(player1_name, Kreis, true);
         Player2 = new Player(player2_name, Kreuz, false);

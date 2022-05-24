@@ -27,7 +27,7 @@ public class MainMenu {
     private JButton newPlayerButton;
     private JButton startGameButton;
     private JTable leaderboard;
-    private static JFrame frame = new JFrame("MainMenu");
+    private static JFrame frame = new JFrame("Main Menu");
 
     public MainMenu() {
         //$$$setupUI$$$();

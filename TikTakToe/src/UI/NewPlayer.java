@@ -18,6 +18,7 @@ public class NewPlayer extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         setResizable(false);
+        setTitle("Create new Player");
         //setLocationRelativeTo(null);
 
 
