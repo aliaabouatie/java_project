@@ -73,7 +73,7 @@
       </component>
       <component id="207c6" class="javax.swing.JButton" binding="startGameButton" default-binding="true">
         <constraints>
-          <grid row="4" column="2" row-span="7" col-span="5" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="2" row-span="9" col-span="5" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
           <gridbag top="30" left="50" bottom="30" right="0" weightx="0.0" weighty="0.0" ipady="20"/>
         </constraints>
         <properties>
@@ -112,6 +112,19 @@
         <properties>
           <foreground color="-1"/>
           <text value="Player 1:"/>
+        </properties>
+      </component>
+      <component id="dd8af" class="javax.swing.JTable" binding="leaderboard" custom-create="true">
+        <constraints>
+          <grid row="13" column="3" row-span="1" col-span="4" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="50"/>
+          </grid>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <cellSelectionEnabled value="false"/>
+          <foreground color="-11636371"/>
+          <surrendersFocusOnKeystroke value="true"/>
         </properties>
       </component>
     </children>
