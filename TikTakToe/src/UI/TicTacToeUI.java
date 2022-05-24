@@ -3,6 +3,11 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class TicTacToeUI extends JFrame {
     public JPanel rootPanel;
@@ -31,13 +36,22 @@ public class TicTacToeUI extends JFrame {
 
 
     public TicTacToeUI(String Modus, String player1_name, String player2_name) {
+        //$$$setupUI$$$();
+        setContentPane(rootPanel);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setResizable(false);
+
         Player1 = new Player(player1_name, Kreis, true);
         Player2 = new Player(player2_name, Kreuz, false);
-        $$$setupUI$$$();
+        //$$$setupUI$$$();
         Player1_name.setText(Player1.getName() + ": " + Player1.getMarker().getZeichen() + "  ");
         Player2_name.setText(Player2.getName() + ": " + Player2.getMarker().getZeichen() + "  ");
         Player1_score.setText(String.valueOf(player1_score_int));
         Player2_score.setText(String.valueOf(player2_score_int));
+
 
         if ("Player".equals(Modus)) {
             TicTacToeField.addMouseListener(new MouseAdapter() {
@@ -54,9 +68,7 @@ public class TicTacToeUI extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     zeichneLeeresSpielfeld();
                     spielfeld.fuelleFelder();
-                    System.out.println(spielfeld);
-                    System.out.println(Player1.getName() + " " + Player1.getMarker());
-                    System.out.println(Player2.getName() + " " + Player2.getMarker());
+                    switchPlayerStartet();
                 }
             });
         }
@@ -97,9 +109,6 @@ public class TicTacToeUI extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     zeichneLeeresSpielfeld();
                     spielfeld.fuelleFelder();
-                    System.out.println(spielfeld);
-                    System.out.println(Player1.getName() + " " + Player1.getMarker());
-                    System.out.println(Player2.getName() + " " + Player2.getMarker());
                 }
             });
         }
@@ -107,14 +116,8 @@ public class TicTacToeUI extends JFrame {
         Mainmenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                /*JFrame frame = new JFrame("MainMenu");
-                frame.setContentPane(new MainMenu().rootPanel);
-                //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.pack();
-                frame.setVisible(true);
-                frame.setLocationRelativeTo(null);
-                frame.setResizable(false);*/
-                //setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                MainMenu.closeWindow();
+                MainMenu.main(null);
                 dispose();
             }
         });
@@ -172,7 +175,6 @@ public class TicTacToeUI extends JFrame {
             SymbolAnDerReihe = Kreis;
         }
 
-        spielfeld.gibSpielbrettAusTemp();
         return true;
     }
 
@@ -242,6 +244,7 @@ public class TicTacToeUI extends JFrame {
     private boolean checkWin() {
         if (spielfeld.checkWinZeichen(Kreis.getZeichen())) {
             Player Winner = CheckWinner(Kreis);
+            schreibStatisticCsv(Player1.getName(), Player2.getName(), Winner.getName());
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ex) {
@@ -249,13 +252,13 @@ public class TicTacToeUI extends JFrame {
             ;
             spielfeld.fuelleFelder();
             zeichneLeeresSpielfeld();
-            System.out.println("Kreis hat gewonnen");
             switchPlayerStartet();
             return true;
         }
 
         if (spielfeld.checkWinZeichen(Kreuz.getZeichen())) {
             Player Winner = CheckWinner(Kreuz);
+            schreibStatisticCsv(Player1.getName(), Player2.getName(), Winner.getName());
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ex) {
@@ -263,7 +266,6 @@ public class TicTacToeUI extends JFrame {
             ;
             spielfeld.fuelleFelder();
             zeichneLeeresSpielfeld();
-            System.out.println("Kreuz hat gewonnen");
             switchPlayerStartet();
             return true;
         }
@@ -272,6 +274,7 @@ public class TicTacToeUI extends JFrame {
 
     private boolean checkVollesSpielfeld() {
         if (spielfeld.checkSpielfeldVoll()) {
+            schreibStatisticCsv(Player1.getName(), Player2.getName(), null);
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ex) {
@@ -325,6 +328,30 @@ public class TicTacToeUI extends JFrame {
         }
     }
 
+    private void schreibStatisticCsv(String Player1, String Player2, String Winner) {
+        try {
+            Path statisticsDatei = Paths.get("statistics.csv");
+            BufferedWriter meinWriter = Files.newBufferedWriter(statisticsDatei, StandardOpenOption.APPEND);
+
+            if (Player1.equals(Winner)) {
+                meinWriter.write(Player1 + "," + Player2 + "," + "win" + "\n");
+                meinWriter.write(Player2 + "," + Player1 + "," + "lose" + "\n");
+            } else {
+                if (Player2.equals(Winner)) {
+                    meinWriter.write(Player1 + "," + Player2 + "," + "lose" + "\n");
+                    meinWriter.write(Player2 + "," + Player1 + "," + "win" + "\n");
+                } else {
+                    meinWriter.write(Player1 + "," + Player2 + "," + "draw" + "\n");
+                    meinWriter.write(Player2 + "," + Player1 + "," + "draw" + "\n");
+                }
+            }
+
+            meinWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         //JFrame frame = new JFrame("TicTacToeUI");
         TicTacToeUI frame = new TicTacToeUI("Player", "Marc", "Mia");
@@ -336,132 +363,5 @@ public class TicTacToeUI extends JFrame {
 
     }
 
-
-    /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
-     *
-     * @noinspection ALL
-     */
-    private void $$$setupUI$$$() {
-        rootPanel = new JPanel();
-        rootPanel.setLayout(new BorderLayout(0, 0));
-        rootPanel.setBackground(new Color(-8211794));
-        rootPanel.setMinimumSize(new Dimension(1000, 600));
-        rootPanel.setPreferredSize(new Dimension(1000, 600));
-        SouthPanel = new JPanel();
-        SouthPanel.setLayout(new GridBagLayout());
-        SouthPanel.setBackground(new Color(-8211794));
-        SouthPanel.setPreferredSize(new Dimension(300, 150));
-        rootPanel.add(SouthPanel, BorderLayout.SOUTH);
-        newGame = new JButton();
-        newGame.setForeground(new Color(-11636371));
-        newGame.setHorizontalTextPosition(11);
-        newGame.setPreferredSize(new Dimension(108, 30));
-        newGame.setText("Neues Spiel");
-        GridBagConstraints gbc;
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        SouthPanel.add(newGame, gbc);
-        Mainmenu = new JButton();
-        Mainmenu.setForeground(new Color(-11636371));
-        Mainmenu.setHorizontalTextPosition(0);
-        Mainmenu.setInheritsPopupMenu(false);
-        Mainmenu.setText("Main Menu");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        SouthPanel.add(Mainmenu, gbc);
-        Spielstand = new JPanel();
-        Spielstand.setLayout(new GridBagLayout());
-        Spielstand.setBackground(new Color(-8211794));
-        Spielstand.setForeground(new Color(-1));
-        Spielstand.setMaximumSize(new Dimension(300, 2147483647));
-        Spielstand.setPreferredSize(new Dimension(300, 150));
-        rootPanel.add(Spielstand, BorderLayout.NORTH);
-        Vs = new JLabel();
-        Vs.setHorizontalAlignment(0);
-        Vs.setHorizontalTextPosition(0);
-        Vs.setPreferredSize(new Dimension(50, 16));
-        Vs.setText("Vs");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        Spielstand.add(Vs, gbc);
-        numberfield_seperator = new JLabel();
-        numberfield_seperator.setText(":");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        Spielstand.add(numberfield_seperator, gbc);
-        Player2_score = new JLabel();
-        Player2_score.setHorizontalTextPosition(0);
-        Player2_score.setText("Label");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        Spielstand.add(Player2_score, gbc);
-        Player1_score = new JLabel();
-        Player1_score.setHorizontalAlignment(0);
-        Player1_score.setHorizontalTextPosition(0);
-        Player1_score.setText("Label");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        Spielstand.add(Player1_score, gbc);
-        Player1_name = new JLabel();
-        Player1_name.setHorizontalAlignment(0);
-        Player1_name.setHorizontalTextPosition(0);
-        Player1_name.setPreferredSize(new Dimension(125, 16));
-        Player1_name.setText("Label");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        Spielstand.add(Player1_name, gbc);
-        Player2_name = new JLabel();
-        Player2_name.setHorizontalAlignment(0);
-        Player2_name.setHorizontalTextPosition(0);
-        Player2_name.setPreferredSize(new Dimension(125, 16));
-        Player2_name.setText("Label");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        Spielstand.add(Player2_name, gbc);
-        EastPanel = new JPanel();
-        EastPanel.setLayout(new GridBagLayout());
-        EastPanel.setBackground(new Color(-8211794));
-        EastPanel.setPreferredSize(new Dimension(350, 600));
-        rootPanel.add(EastPanel, BorderLayout.EAST);
-        WestPanel = new JPanel();
-        WestPanel.setLayout(new GridBagLayout());
-        WestPanel.setBackground(new Color(-8211794));
-        WestPanel.setPreferredSize(new Dimension(350, 600));
-        rootPanel.add(WestPanel, BorderLayout.WEST);
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout(new BorderLayout(0, 0));
-        panel1.setBackground(new Color(-8211794));
-        panel1.setMinimumSize(new Dimension(300, 300));
-        panel1.setPreferredSize(new Dimension(300, 300));
-        rootPanel.add(panel1, BorderLayout.CENTER);
-        TicTacToeField = new JPanel();
-        TicTacToeField.setLayout(new BorderLayout(0, 0));
-        TicTacToeField.setBackground(new Color(-8211794));
-        TicTacToeField.setEnabled(true);
-        TicTacToeField.setMaximumSize(new Dimension(300, 300));
-        TicTacToeField.setMinimumSize(new Dimension(300, 300));
-        TicTacToeField.setOpaque(true);
-        TicTacToeField.setPreferredSize(new Dimension(300, 300));
-        panel1.add(TicTacToeField, BorderLayout.CENTER);
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    public JComponent $$$getRootComponent$$$() {
-        return rootPanel;
-    }
 
 }

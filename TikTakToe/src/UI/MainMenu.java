@@ -14,26 +14,25 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.nio.file.*;
-import java.util.Locale;
+import java.util.*;
+
 
 public class MainMenu {
     public JPanel rootPanel;
     private JLabel tictactoe;
     private JRadioButton PlayerVsPlayer;
     private JRadioButton PlayerVsComp;
-    private String[] PlayerArray = {"Marc"};
     private JComboBox comboBox1;
     private JComboBox comboBox2;
     private JButton newPlayerButton;
     private JButton startGameButton;
-    //private static String columns[] = {"Rank", "Player", "Win-Rate"};
-    //private static Object[][] data = {{"1", "Marc", "50%"}, {"2", "Mia", "30%"}};
     private JTable leaderboard;
+    private static JFrame frame = new JFrame("MainMenu");
 
     public MainMenu() {
-        $$$setupUI$$$();
-        getPlayers();
-
+        //$$$setupUI$$$();
+        createUIComponents();
+        addComboBoxen();
         newPlayerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -48,21 +47,9 @@ public class MainMenu {
             public void actionPerformed(ActionEvent e) {
                 if (PlayerVsPlayer.isSelected()) {
                     TicTacToeUI frame = new TicTacToeUI("Player", String.valueOf(comboBox1.getSelectedItem()), String.valueOf(comboBox2.getSelectedItem()));
-                    frame.setContentPane(new TicTacToeUI("Player", String.valueOf(comboBox1.getSelectedItem()), String.valueOf(comboBox2.getSelectedItem())).rootPanel);
-                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    frame.pack();
-                    frame.setLocationRelativeTo(null);
-                    frame.setVisible(true);
-                    frame.setResizable(false);
                 }
                 if (PlayerVsComp.isSelected()) {
                     TicTacToeUI frame = new TicTacToeUI("Computer", String.valueOf(comboBox1.getSelectedItem()), String.valueOf(comboBox2.getSelectedItem()));
-                    frame.setContentPane(new TicTacToeUI("Computer", String.valueOf(comboBox1.getSelectedItem()), String.valueOf(comboBox2.getSelectedItem())).rootPanel);
-                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    frame.pack();
-                    frame.setLocationRelativeTo(null);
-                    frame.setVisible(true);
-                    frame.setResizable(false);
                 }
             }
         });
@@ -86,8 +73,8 @@ public class MainMenu {
         });
     }
 
-    private void getPlayers() {
-
+    private ArrayList<String> getPlayers() {
+        ArrayList<String> players = new ArrayList<String>();
         try {
             Path PlayerDatei = Paths.get("players.csv");
 
@@ -95,8 +82,66 @@ public class MainMenu {
             String zeile = meinReader.readLine(); // erste Zeile lesen while (zeile != null) { // null wenn am Dateiende
             zeile = meinReader.readLine(); // naechste Zeile lesen
             while (zeile != null) {
-                comboBox1.addItem(zeile);
-                comboBox2.addItem(zeile);
+                players.add(zeile);
+                zeile = meinReader.readLine();
+            }
+
+            meinReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return players;
+    }
+
+    private void addComboBoxen() {
+        ArrayList<String> players = getPlayers();
+        for (int i = 0; i < players.size(); i++) {
+            comboBox1.addItem(players.get(i));
+            comboBox2.addItem(players.get(i));
+        }
+    }
+
+    public String[][] getLeaderboard() {
+        String[][] leaderboardArr = new String[6][3];
+        ArrayList<String> player = getPlayers();
+        String[][] wins = new String[getPlayers().size()][2];
+        for (int i = 0; i < player.size(); i++) {
+            wins[i][0] = player.get(i);
+            wins[i][1] = "0";
+        }
+        try {
+            Path StatisticDatei = Paths.get("statistics.csv");
+
+            BufferedReader meinReader = Files.newBufferedReader(StatisticDatei);
+            String zeile = meinReader.readLine(); // erste Zeile lesen while (zeile != null) { // null wenn am Dateiende
+            zeile = meinReader.readLine(); // naechste Zeile lesen
+
+            while (zeile != null) {
+                StringTokenizer st = new StringTokenizer(zeile, ",");
+                String Player1 = st.nextToken();
+                String Player2 = st.nextToken();
+                String result1 = st.nextToken();
+                zeile = meinReader.readLine();
+                st = new StringTokenizer(zeile, ",");
+                st.nextToken();
+                st.nextToken();
+                String result2 = st.nextToken();
+
+                for (int i = 0; i < player.size(); i++) {
+                    if (result1.equals("win")) {
+
+                        if (wins[i][0].equals(Player1)) {
+                            wins[i][1] = String.valueOf(Integer.parseInt(wins[i][1]) + 1);
+                        }
+
+                    } else {
+                        if (result2.equals("win")) {
+                            if (wins[i][0].equals(Player2)) {
+                                wins[i][1] = String.valueOf(Integer.parseInt(wins[i][1]) + 1);
+                            }
+                        }
+                    }
+                }
                 zeile = meinReader.readLine();
             }
 
@@ -105,13 +150,29 @@ public class MainMenu {
             e.printStackTrace();
         }
 
+        Arrays.sort(wins, Comparator.comparingInt(o -> Integer.parseInt(o[1])));
+        int rank = 1;
+        leaderboardArr[0][0] = "Rank";
+        leaderboardArr[0][1] = "Player";
+        leaderboardArr[0][2] = "Wins";
+        for (int i = player.size() - 1; i > player.size() - 6; i--) {
+            leaderboardArr[rank][0] = String.valueOf(rank);
+            leaderboardArr[rank][1] = wins[i][0];
+            leaderboardArr[rank][2] = wins[i][1];
+            rank += 1;
+
+        }
+        return leaderboardArr;
     }
 
+    public static void closeWindow() {
+        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+    }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("MainMenu");
+        //JFrame frame = new JFrame("MainMenu");
         frame.setContentPane(new MainMenu().rootPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
@@ -119,168 +180,12 @@ public class MainMenu {
 
     }
 
-    /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
-     *
-     * @noinspection ALL
-     */
-    private void $$$setupUI$$$() {
-        createUIComponents();
-        rootPanel = new JPanel();
-        rootPanel.setLayout(new GridBagLayout());
-        rootPanel.setBackground(new Color(-8211794));
-        rootPanel.setPreferredSize(new Dimension(1000, 600));
-        tictactoe = new JLabel();
-        Font tictactoeFont = this.$$$getFont$$$("Andale Mono", Font.ITALIC, 48, tictactoe.getFont());
-        if (tictactoeFont != null) tictactoe.setFont(tictactoeFont);
-        tictactoe.setForeground(new Color(-1));
-        tictactoe.setHorizontalAlignment(0);
-        tictactoe.setHorizontalTextPosition(0);
-        tictactoe.setMinimumSize(new Dimension(600, 41));
-        tictactoe.setPreferredSize(new Dimension(600, 40));
-        tictactoe.setText("  Tic Tac Toe");
-        tictactoe.setVerticalAlignment(0);
-        GridBagConstraints gbc;
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 7;
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.insets = new Insets(0, 0, 20, 0);
-        rootPanel.add(tictactoe, gbc);
-        PlayerVsComp = new JRadioButton();
-        Font PlayerVsCompFont = this.$$$getFont$$$(null, -1, 20, PlayerVsComp.getFont());
-        if (PlayerVsCompFont != null) PlayerVsComp.setFont(PlayerVsCompFont);
-        PlayerVsComp.setForeground(new Color(-1));
-        PlayerVsComp.setLabel("Player Vs Computer");
-        PlayerVsComp.setPreferredSize(new Dimension(300, 20));
-        PlayerVsComp.setText("Player Vs Computer");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 5;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.WEST;
-        rootPanel.add(PlayerVsComp, gbc);
-        final JLabel label1 = new JLabel();
-        label1.setForeground(new Color(-1));
-        label1.setHorizontalAlignment(10);
-        label1.setHorizontalTextPosition(11);
-        label1.setText("Player 2:");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 5;
-        gbc.gridy = 3;
-        gbc.anchor = GridBagConstraints.WEST;
-        rootPanel.add(label1, gbc);
-        comboBox2 = new JComboBox();
-        comboBox2.setForeground(new Color(-11636371));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 6;
-        gbc.gridy = 3;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        rootPanel.add(comboBox2, gbc);
-        newPlayerButton = new JButton();
-        newPlayerButton.setEnabled(true);
-        newPlayerButton.setForeground(new Color(-11636371));
-        newPlayerButton.setText("New Player");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 7;
-        gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        rootPanel.add(newPlayerButton, gbc);
-        startGameButton = new JButton();
-        Font startGameButtonFont = this.$$$getFont$$$(null, -1, 22, startGameButton.getFont());
-        if (startGameButtonFont != null) startGameButton.setFont(startGameButtonFont);
-        startGameButton.setForeground(new Color(-11636371));
-        startGameButton.setText("Start Game");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 4;
-        gbc.gridwidth = 5;
-        gbc.gridheight = 9;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.ipady = 20;
-        gbc.insets = new Insets(30, 50, 30, 0);
-        rootPanel.add(startGameButton, gbc);
-        PlayerVsPlayer = new JRadioButton();
-        Font PlayerVsPlayerFont = this.$$$getFont$$$(null, -1, 20, PlayerVsPlayer.getFont());
-        if (PlayerVsPlayerFont != null) PlayerVsPlayer.setFont(PlayerVsPlayerFont);
-        PlayerVsPlayer.setForeground(new Color(-1));
-        PlayerVsPlayer.setPreferredSize(new Dimension(300, 20));
-        PlayerVsPlayer.setSelected(false);
-        PlayerVsPlayer.setText("Player Vs Player");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 3;
-        gbc.gridy = 1;
-        gbc.insets = new Insets(15, 100, 15, 0);
-        rootPanel.add(PlayerVsPlayer, gbc);
-        comboBox1 = new JComboBox();
-        comboBox1.setForeground(new Color(-11636371));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 3;
-        gbc.gridy = 3;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(0, 0, 0, 100);
-        rootPanel.add(comboBox1, gbc);
-        final JLabel label2 = new JLabel();
-        label2.setForeground(new Color(-1));
-        label2.setText("Player 1:");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 3;
-        gbc.anchor = GridBagConstraints.WEST;
-        rootPanel.add(label2, gbc);
-        leaderboard.setCellSelectionEnabled(false);
-        leaderboard.setForeground(new Color(-11636371));
-        leaderboard.setSurrendersFocusOnKeystroke(true);
-        gbc = new GridBagConstraints();
-        gbc.gridx = 3;
-        gbc.gridy = 13;
-        gbc.gridwidth = 4;
-        gbc.fill = GridBagConstraints.BOTH;
-        rootPanel.add(leaderboard, gbc);
-        ButtonGroup buttonGroup;
-        buttonGroup = new ButtonGroup();
-        buttonGroup.add(PlayerVsPlayer);
-        buttonGroup.add(PlayerVsComp);
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
-        if (currentFont == null) return null;
-        String resultName;
-        if (fontName == null) {
-            resultName = currentFont.getName();
-        } else {
-            Font testFont = new Font(fontName, Font.PLAIN, 10);
-            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
-                resultName = fontName;
-            } else {
-                resultName = currentFont.getName();
-            }
-        }
-        Font font = new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
-        boolean isMac = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH).startsWith("mac");
-        Font fontWithFallback = isMac ? new Font(font.getFamily(), font.getStyle(), font.getSize()) : new StyleContext().getFont(font.getFamily(), font.getStyle(), font.getSize());
-        return fontWithFallback instanceof FontUIResource ? fontWithFallback : new FontUIResource(fontWithFallback);
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    public JComponent $$$getRootComponent$$$() {
-        return rootPanel;
-    }
-
     private void createUIComponents() {
         // TODO: place custom component creation code here
-        String columns[] = {"Rank", "Player", "Win-Rate"};
-        Object[][] data = {{"1", "Marc", "50%"}, {"2", "Mia", "30%"}};
-        leaderboard = new JTable(data, columns);
+        String columns[] = {"Rank", "Player", "Wins"};
+        leaderboard = new JTable(getLeaderboard(), columns);
+
+
     }
+
 }

@@ -28,7 +28,7 @@
               <foreground color="-11636371"/>
               <horizontalTextPosition value="11"/>
               <preferredSize width="108" height="30"/>
-              <text value="Neues Spiel"/>
+              <text value="New Game"/>
             </properties>
           </component>
           <component id="b3506" class="javax.swing.JButton" binding="Mainmenu">
