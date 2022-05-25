@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="UI.MainMenu">
+  <grid id="27dc6" binding="rootPanel" layout-manager="GridBagLayout">
+    <constraints>
+      <xy x="20" y="20" width="1043" height="430"/>
+    </constraints>
+    <properties>
+      <background color="-8211794"/>
+      <preferredSize width="1000" height="600"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <component id="9d156" class="javax.swing.JLabel" binding="tictactoe">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="7" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag top="0" left="0" bottom="20" right="0" weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <font name="Andale Mono" size="48" style="2"/>
+          <foreground color="-1"/>
+          <horizontalAlignment value="0"/>
+          <horizontalTextPosition value="0"/>
+          <minimumSize width="600" height="41"/>
+          <preferredSize width="600" height="40"/>
+          <text value="  Tic Tac Toe"/>
+          <verticalAlignment value="0"/>
+        </properties>
+      </component>
+      <component id="c2cdd" class="javax.swing.JRadioButton" binding="PlayerVsComp">
+        <constraints>
+          <grid row="1" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <font size="20"/>
+          <foreground color="-1"/>
+          <label value="Player Vs Computer"/>
+          <preferredSize width="300" height="20"/>
+          <text value="Player Vs Computer"/>
+        </properties>
+      </component>
+      <component id="e77b" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <foreground color="-1"/>
+          <horizontalAlignment value="10"/>
+          <horizontalTextPosition value="11"/>
+          <text value="Player 2:"/>
+        </properties>
+      </component>
+      <component id="3cba9" class="javax.swing.JComboBox" binding="comboBox2" default-binding="true">
+        <constraints>
+          <grid row="3" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <foreground color="-11636371"/>
+        </properties>
+      </component>
+      <component id="a66bd" class="javax.swing.JButton" binding="newPlayerButton">
+        <constraints>
+          <grid row="3" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <enabled value="true"/>
+          <foreground color="-11636371"/>
+          <text value="New Player"/>
+        </properties>
+      </component>
+      <component id="207c6" class="javax.swing.JButton" binding="startGameButton" default-binding="true">
+        <constraints>
+          <grid row="4" column="2" row-span="9" col-span="5" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag top="30" left="50" bottom="30" right="0" weightx="0.0" weighty="0.0" ipady="20"/>
+        </constraints>
+        <properties>
+          <font size="22"/>
+          <foreground color="-11636371"/>
+          <text value="Start Game"/>
+        </properties>
+      </component>
+      <component id="901fa" class="javax.swing.JRadioButton" binding="PlayerVsPlayer">
+        <constraints>
+          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag top="15" left="100" bottom="15" right="0" weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <font size="20"/>
+          <foreground color="-1"/>
+          <preferredSize width="300" height="20"/>
+          <selected value="false"/>
+          <text value="Player Vs Player"/>
+        </properties>
+      </component>
+      <component id="6215b" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+        <constraints>
+          <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag top="0" left="0" bottom="0" right="100" weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <foreground color="-11636371"/>
+        </properties>
+      </component>
+      <component id="7f8a1" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <foreground color="-1"/>
+          <text value="Player 1:"/>
+        </properties>
+      </component>
+      <component id="dd8af" class="javax.swing.JTable" binding="leaderboard" custom-create="true">
+        <constraints>
+          <grid row="13" column="3" row-span="1" col-span="4" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="50"/>
+          </grid>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <cellSelectionEnabled value="false"/>
+          <foreground color="-11636371"/>
+          <surrendersFocusOnKeystroke value="true"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+  <buttonGroups>
+    <group name="Gamemode">
+      <member id="901fa"/>
+      <member id="c2cdd"/>
+    </group>
+  </buttonGroups>
+</form>
